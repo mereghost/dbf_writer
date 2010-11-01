@@ -1,9 +1,12 @@
 = dbf_writer
 
-Description goes here.
+DbfWriter is a small lib for writing arrays of objects as DBF files.
+
+It'll write the data directly to disk, in binary format without having to pass through data access layers, which should be (I hope) very fast.
+It's inspired on the DbfExporter library for .NET
 
 == Contributing to dbf_writer
- 
+
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
 * Fork the project
@@ -14,6 +17,5 @@ Description goes here.
 
 == Copyright
 
-Copyright (c) 2010 Marcello. See LICENSE.txt for
-further details.
+Copyright (c) 2010 Mereghost. See LICENSE.txt for further details.
 
