@@ -12,13 +12,22 @@ describe "DbfWriter" do
   it "should write a valid empty file" do
     dbf = DbfWriter.new
     dbf.add_field 'data'
-    dbf.to_binary_string.should == File.open('spec/support/sample_dbf/single_column.dbf','rb').readlines.join('')
+    dbf.to_binary_string.should == load_file('single_column')
   end
 
-#  it "should write a single character column DBF" do
-#    data = File.open('support/samples/single_column.dbf', 'rb').readlines
-#    writer = DbfWriter.new.add_column('DATA')
-#    writer.binary.should == data
-#  end
+  it "write a valid double char column empty file" do
+    dbf = DbfWriter.new
+    dbf.add_field 'data1'
+    dbf.add_field 'data2'
+
+    dbf.to_binary_string.should == load_file('double_column')
+  end
+
+  private
+
+  def load_file(file)
+    File.open("spec/support/sample_dbf/#{file}.dbf",'rb').readlines.join('')
+  end
+
 end
 

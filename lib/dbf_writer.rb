@@ -18,10 +18,12 @@ class DbfWriter
 
   private
   def column_definitions
+    offset = 1
     arr = @fields.inject([]) do |stuff, hash|
       columns = []
       columns << hash[:name].upcase
       columns << "C"
+      columns << offset
       columns << 0 #Reserved
       columns << hash[:total_length]
       columns << 0 #WorkAreaId
@@ -30,7 +32,9 @@ class DbfWriter
       columns << 0 #reserved
       columns << 0 #reserved
       columns << 0 #IncludeMdx
-      stuff << columns.pack('a10ax4CCx15')
+      stuff << columns.pack('a11aCx2CCx15')
+      offset += hash[:total_length]
+      stuff
     end
     @data << arr.flatten.join('')
   end
@@ -39,7 +43,7 @@ class DbfWriter
     header = [3]
     header << 10
     header << 11
-    header << 3
+    header << 4
     header << 0
     header << (@fields.size * 32 + 33)
     header << @fields.inject(0) { |s,f| s + f[:total_length]} + 1
