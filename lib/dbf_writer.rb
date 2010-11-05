@@ -6,8 +6,12 @@ class DbfWriter
     @fields = []
   end
 
-  def add_field(field)
-    @fields << {:name => field, :total_length => 50}
+  def add_field(field_name, length = 50)
+    if (1..255).include? length
+      @fields << {:name => field_name, :total_length => length}
+    else
+      raise ArgumentError, "Field is too large. Length must be 1..255"
+    end
   end
 
   def to_binary_string
