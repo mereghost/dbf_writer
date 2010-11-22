@@ -6,7 +6,11 @@ class BaseFieldWriter
   end
 
   def initialize(field_name, field_length)
-    @name, @length = field_name, field_length
+    unless (1..255).include? field_length
+      raise ArgumentError, "Field is too large. Length must be 1..255"
+    else
+      @name, @length = field_name, field_length
+    end
   end
 
   def definition(offset)

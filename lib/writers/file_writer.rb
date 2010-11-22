@@ -5,15 +5,12 @@ class FileWriter
   attr_reader :fields
 
   def initialize
-    @fields = []
+    @fields, @data = [], ""
+
   end
 
   def add_field(field_name, length = 50)
-    if (1..255).include? length
-      @fields << BaseFieldWriter.new(field_name, length)
-    else
-      raise ArgumentError, "Field is too large. Length must be 1..255"
-    end
+    @fields << BaseFieldWriter.new(field_name, length)
   end
 
   def to_binary_string
@@ -35,13 +32,13 @@ class FileWriter
 
   def header
     header = [3]
-    header << 10
-    header << 11
-    header << 4
-    header << 0
-    header << (@fields.size * 32 + 33)
-    header << @fields.inject(1) { |s,f| s + f.length}
-    @data = header.pack('CCCCVvvxxxxxxxxxxxxxxxxxxxx')
+    header << 10 # this should be year
+    header << 11 # month
+    header << 4  # day
+    header << 0  # reserved
+    header << (@fields.size * 32 + 33) #size of fields descriptors
+    header << @fields.inject(1) { |s,f| s + f.length} #field definitions
+    @data << header.pack('CCCCVvvxxxxxxxxxxxxxxxxxxxx')
     column_definitions
     @data << "\x0D"
   end
