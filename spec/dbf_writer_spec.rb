@@ -3,33 +3,46 @@ include DbfWriter
 
 describe "FileWriter" do
 
+  before :each do
+    @dbf = FileWriter.new
+  end
+
   it "should accumulate fields" do
-    dbf = FileWriter.new
-    dbf.add_field('DATA')
-    dbf.fields.size.should == 1
-    dbf.fields[0].should be_a BaseFieldWriter
+    @dbf.add_field('DATA')
+    @dbf.fields.size.should == 1
+    @dbf.fields[0].should be_a BaseFieldWriter
   end
 
   it "should write a valid empty file" do
-    dbf = FileWriter.new
-    dbf.add_field 'data'
-    dbf.to_binary_string.should == load_file('single_column')
+    @dbf.add_field 'data'
+    @dbf.to_binary_string.should == load_file('single_column')
   end
 
   it "write a valid double char column empty file" do
-    dbf = FileWriter.new
-    dbf.add_field 'data1', 150
-    dbf.add_field 'data2'
-    dbf.to_binary_string.should == load_file('double_column')
+    @dbf.add_field 'data1', 150
+    @dbf.add_field 'data2'
+    @dbf.to_binary_string.should == load_file('double_column')
   end
 
   it "should accept a field size between 1..255" do
-    dbf = FileWriter.new
-    dbf.add_field 'data', 250
-    dbf.to_binary_string.should == load_file('single_250_column')
+    @dbf.add_field 'data', 250
+    @dbf.to_binary_string.should == load_file('single_250_column')
     lambda {
-      lambda { dbf.add_field('data2', 300) }.should raise_error ArgumentError
+      lambda { @dbf.add_field('data2', 300) }.should raise_error ArgumentError
     }.should_not change(:fields, :size)
+  end
+
+  it "should write a file with 1 column 1 row" do
+    @dbf.add_field 'data'
+    @dbf.add_row 'FIELD_DATA_USED'
+    @dbf.to_binary_string.should == load_file('char_50_single_row')
+  end
+
+  it "should write a file with 1 column and 2 rows" do
+    @dbf.add_field 'data'
+    @dbf.add_row 'FIELD_DATA_USED'
+    @dbf.add_row 'SECOND_ROW_DATA'
+    @dbf.to_binary_string.should == load_file('char_50_2_rows')
   end
 
   private

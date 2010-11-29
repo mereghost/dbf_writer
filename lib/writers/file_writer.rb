@@ -1,21 +1,26 @@
-require 'writers/base_field'
+require 'writers/field_writers'
 
 class FileWriter
 
   attr_reader :fields
 
   def initialize
-    @fields, @data = [], ""
+    @fields, @rows, @data = [], [], ""
 
   end
 
   def add_field(field_name, length = 50)
-    @fields << BaseFieldWriter.new(field_name, length)
+    @fields << CharacterFieldWriter.new(field_name, length)
+  end
+
+  def add_row(*row)
+    @rows << row
   end
 
   def to_binary_string
     header
-#    eof
+    row_data
+    eof unless @rows.empty?
     @data
   end
 
@@ -35,7 +40,7 @@ class FileWriter
     header << 10 # this should be year
     header << 11 # month
     header << 4  # day
-    header << 0  # reserved
+    header << @rows.size  # total number of records
     header << (@fields.size * 32 + 33) #size of fields descriptors
     header << @fields.inject(1) { |s,f| s + f.length} #field definitions
     @data << header.pack('CCCCVvvxxxxxxxxxxxxxxxxxxxx')
@@ -45,6 +50,12 @@ class FileWriter
 
   def eof
     @data << "\x1A"
+  end
+
+  def row_data
+    @rows.each do |row|
+      row.each_with_index {|data, index| @data << @fields[index].data(data) }
+    end
   end
 end
 
