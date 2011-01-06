@@ -9,8 +9,9 @@ class FileWriter
 
   end
 
-  def add_field(field_name, length = 50)
-    @fields << CharacterFieldWriter.new(field_name, length)
+  def add_field(field_name, options = {})
+    options = parse_options(options)
+    @fields << BaseFieldWriter.field_for(field_name, options)
   end
 
   def add_row(*row)
@@ -56,6 +57,12 @@ class FileWriter
     @rows.each do |row|
       row.each_with_index {|data, index| @data << @fields[index].data(data) }
     end
+  end
+
+  def parse_options(options)
+    options[:length] ||= 50
+    options[:type] ||= :character
+    options
   end
 end
 

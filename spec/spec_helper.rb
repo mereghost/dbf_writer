@@ -1,3 +1,6 @@
+require 'simplecov'
+SimpleCov.start
+
 require 'dbf_writer'
 require 'rspec'
 
