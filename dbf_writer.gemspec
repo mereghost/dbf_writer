@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Mereghost (Marcello Rocha)"]
   s.email       = ["marcello.rocha@gmail.com"]
-  s.homepage    = ""
+  s.homepage    = "http://github.com/mereghost/dbf_writer"
   s.summary     = %q{DbfWriter is a library for exporting your collection of objects as BDF files }
   s.description = %q{Export your data as DBF files. This gem only writes DBF and do *NOT* read them.}
 

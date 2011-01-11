@@ -14,7 +14,7 @@ class DateFieldWriter < BaseFieldWriter
   # Outputs the data as binary (simple string in this case).
   # TODO: Parse the date to check if it's valid.
   def data(data)
-    "  #{data.gsub(/\D/, '')}"
+    " #{data.gsub(/\D/, '')}"
   end
 end
 

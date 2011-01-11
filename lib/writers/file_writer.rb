@@ -1,6 +1,6 @@
 require 'writers/field_writers'
 
-# Generates the header of the DBF and stores the binary data.
+# Generates the binary header and data of the DBF.
 #
 # Should I split in a Header class since is somewhat complex and only pass field info as needed?
 # That could lead to some tight coupling tho.
@@ -15,16 +15,26 @@ class FileWriter
     @header = [3]
   end
 
+  # Adds a field to the file definition.
+  #
+  # Usage:
+  #
+  # * _name_: can be either a string or a symbol.
+  # * _options_: is a hash that takes the following parameters (See the field writers for more info):
+  #     :type => [:character, :date] is the field type. character is assumed by default
+  #     :length => integer, the length of the character field (default: 50)
   def add_field(field_name, options = {})
     options = parse_options(options)
-    @fields << BaseFieldWriter.field_for(field_name, options)
+    @fields << BaseFieldWriter.field_for(field_name.to_s, options)
     self
   end
 
+  # Add a row of data to the definiton
   def add_row(*row)
     @rows << row
   end
 
+  # Creates a binary representation. Including header + data.
   def to_binary_string
     header
     row_data

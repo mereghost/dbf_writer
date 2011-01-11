@@ -8,7 +8,8 @@ class BaseFieldWriter
   attr_reader :type
 
   def initialize(field_name, options)
-    @name, @length = field_name, options[:length]
+    sanitize_field_name(field_name)
+    @length = options[:length]
     @header_definition = []
     column
   end
@@ -50,6 +51,11 @@ class BaseFieldWriter
     #columns << 0 #reserved
     #columns << 0 #reserved
     #columns << 0 #IncludeMdx
+  end
+
+  def sanitize_field_name(field_name)
+    name = field_name.gsub(/[^A-Za-z1-9_]/, '')[0..9].upcase
+    @name = name.empty? ? 'FIELD' : name
   end
 end
 
