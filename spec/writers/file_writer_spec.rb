@@ -1,10 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe "FileWriter" do
-
-  describe "A new instace" do
-    subject { FileWriter.new }
-
+describe FileWriter do
+  describe "when created" do
     it "should return the object when a field is added" do
       subject.add_field('data').object_id.should == subject.object_id
     end
@@ -16,7 +13,7 @@ describe "FileWriter" do
     end
   end
 
-  describe "File with character fields only" do
+  describe "with a character field" do
     subject { FileWriter.new.add_field 'data' }
 
     it "should write a valid empty file" do
@@ -57,11 +54,9 @@ describe "FileWriter" do
       subject.fields[0].should be_a DateFieldWriter
       subject.to_binary_string.should == load_file('single_date_column')
     end
-
   end
 
   private
-
   def load_file(file)
     File.open("spec/support/sample_dbf/#{file}.dbf",'rb').readlines.join('')
   end

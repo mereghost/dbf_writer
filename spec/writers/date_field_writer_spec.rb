@@ -10,7 +10,7 @@ describe DateFieldWriter do
 
   it "should be able to output its data in binary format" do
     field = DateFieldWriter.new 'data'
-    field.data(Date.today.to_s).should == Date.today.to_s.tr('-','')
+    field.data(Date.today.to_s).should == ' ' + Date.today.to_s.tr('-','')
   end
 
 end
