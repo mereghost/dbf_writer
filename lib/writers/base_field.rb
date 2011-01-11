@@ -33,20 +33,17 @@ class BaseFieldWriter
   # It should be called only at the creation on the file structure, so performance
   # shouldn't be an issue.
   def self.subclasses
-    @@subclasses = []
+    subclasses = []
     ObjectSpace.each_object(Class) do |klass|
-      @@subclasses << klass if klass.ancestors.include? self and klass != self
+      subclasses << klass if klass.ancestors.include? self and klass != self
     end
-    @@subclasses
+    subclasses
   end
 
   private
   def column
-    @header_definition << @name.upcase
-    @header_definition << @type
-    @header_definition << 0 #Reserved
-    @header_definition << @length
-    6.times { @header_definition << 0 }
+    @header_definition.push @name.upcase, @type, 0, @length
+    @header_definition.push 0, 0, 0, 0, 0, 0
     #columns << 0 #WorkAreaId
     #columns << 0 #multiuser
     #columns << 0 #Setfield

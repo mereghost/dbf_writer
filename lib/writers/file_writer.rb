@@ -18,6 +18,7 @@ class FileWriter
   def add_field(field_name, options = {})
     options = parse_options(options)
     @fields << BaseFieldWriter.field_for(field_name, options)
+    self
   end
 
   def add_row(*row)
@@ -67,8 +68,12 @@ class FileWriter
 
   def row_data
     @rows.each do |row|
-      row.each_with_index {|data, index| @data << @fields[index].data(data) }
+      write_row(row)
     end
+  end
+
+  def write_row(row)
+    row.each_with_index {|data, index| @data << @fields[index].data(data) }
   end
 
   def eof

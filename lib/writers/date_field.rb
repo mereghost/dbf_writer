@@ -1,3 +1,4 @@
+# Writes Date fields as per specification.
 class DateFieldWriter < BaseFieldWriter
 
   def self.type
@@ -10,7 +11,10 @@ class DateFieldWriter < BaseFieldWriter
     super(field_name, options)
   end
 
-  def data
+  # Outputs the data as binary (simple string in this case).
+  # TODO: Parse the date to check if it's valid.
+  def data(data)
+    data.gsub(/\D/, '')
   end
 end
 
