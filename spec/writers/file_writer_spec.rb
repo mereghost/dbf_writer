@@ -9,7 +9,24 @@ describe FileWriter do
     it "should accumulate fields" do
       subject.add_field 'data'
       subject.fields.size.should == 1
-      subject.fields[0].should be_a BaseFieldWriter
+      subject.fields['DATA'].should be_a BaseFieldWriter
+    end
+
+    it "should cut longish names to 10 characters tops" do
+      subject.add_field 'really_long_name_for_a_field'
+      subject.fields.keys.should be_member('REALLY_LON')
+      subject.add_field 'really_long_name_for_a_field'
+      subject.fields.keys.should be_member('REALLY_L_1')
+    end
+
+    it "should rename a field if there's one with the same name" do
+      subject.add_field 'data'
+      subject.add_field 'data'
+      subject.add_field 'data'
+      subject.fields.keys.should be_member('DATA')
+      subject.fields.keys.should be_member('DATA_1')
+      subject.fields.keys.should be_member('DATA_2')
+      subject.fields.size.should eql(3)
     end
   end
 
@@ -51,7 +68,7 @@ describe FileWriter do
     subject { FileWriter.new.add_field 'date', type: :date }
 
     it "should be able to write a dbf with a date field" do
-      subject.fields[0].should be_a DateFieldWriter
+      subject.fields.values[0].should be_a DateFieldWriter
       subject.to_binary_string.should == load_file('single_date_column')
     end
   end
