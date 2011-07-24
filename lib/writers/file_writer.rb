@@ -38,6 +38,7 @@ class FileWriter
   # Creates a binary representation. Including header + data.
   def to_binary_string
     header
+    base_field_data
     row_data
     eof unless @rows.empty?
     @data
@@ -48,6 +49,9 @@ class FileWriter
     current_date
     @header << @rows.size  # total number of records
     @header += field_info
+  end
+
+  def base_field_data
     @data << @header.pack('CCCCVvvxxxxxxxxxxxxxxxxxxxx')
     @data << column_definitions
     @data << "\x0D"
@@ -90,12 +94,12 @@ class FileWriter
     regex = Regexp.new "^#{field}.*"
     names = @fields.keys.select {|key| key =~ regex }
     unless names.empty?
-      field = setup_new_name(names.sort.last, field)
+      field = new_field_name(names.sort.last, field)
     end
     field
   end
 
-  def setup_new_name(last_name, field_name)
+  def new_field_name(last_name, field_name)
     index = last_name.gsub(/\D/,'').to_i
     "#{field_name[0..7]}_#{index.succ}"
   end

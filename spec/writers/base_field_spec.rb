@@ -11,13 +11,13 @@ describe BaseFieldWriter do
   end
 
   it "should sanitize it's field name" do
-    BaseFieldWriter.new('coisa1', :length => 50).name.should =~ /COISA1/
-    BaseFieldWriter.new('COISA', :length => 50).name.should =~ /COISA/
-    BaseFieldWriter.new('thingamajic', :length => 50).name.should =~ /^THINGAMAJI$/
-    BaseFieldWriter.new('coisa_1', :length => 50).name.should =~ /COISA_1/
-    BaseFieldWriter.new('really_long_field_name', :length => 50).name.should =~ /^REALLY_LON$/
-    BaseFieldWriter.new('ç~ãááácoisa', :length => 50).name.should =~ /COISA/
-    BaseFieldWriter.new('ç', :length => 2).name.should =~ /FIELD/
+    BaseFieldWriter.new('coisa1').name.should =~ /COISA1/
+    BaseFieldWriter.new('COISA').name.should =~ /COISA/
+    BaseFieldWriter.new('thingamajic').name.should =~ /^THINGAMAJI$/
+    BaseFieldWriter.new('coisa_1').name.should =~ /COISA_1/
+    BaseFieldWriter.new('really_long_field_name').name.should =~ /^REALLY_LON$/
+    BaseFieldWriter.new('ç~ãááácoisa').name.should =~ /COISA/
+    BaseFieldWriter.new('ç').name.should =~ /FIELD/
   end
 end
 

@@ -1,13 +1,15 @@
+# Writes Character fields as per specification.
 class CharacterFieldWriter < BaseFieldWriter
 
   def self.type
     :character
   end
 
-  def initialize(field_name, options)
-    raise ArgumentError, "Field is too large. Length must be 1..255" unless (1..255).include? options[:length]
-    @type = "C"
+  def initialize(field_name, options = {})
     super(field_name, options)
+    @type = "C"
+    @length = @options[:length] || 50
+    raise ArgumentError.new('CharacterFields must have a length between 1 and 255') unless @length.between?(1,255)
   end
 
   def data(data)

@@ -6,15 +6,15 @@ class DateFieldWriter < BaseFieldWriter
   end
 
   def initialize(field_name, options = {})
-    options[:length] = 8
     @type = "D"
+    @length = 8
     super(field_name, options)
   end
 
   # Outputs the data as binary (simple string in this case).
   # TODO: Parse the date to check if it's valid.
-  def data(data)
-    " #{data.gsub(/\D/, '')}"
+  def data(content)
+    " #{content.gsub(/\D/, '')}"
   end
 end
 

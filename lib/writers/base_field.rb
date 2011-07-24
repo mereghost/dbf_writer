@@ -7,27 +7,35 @@ class BaseFieldWriter
   # is a type descriptor per DBF specification. It should be set by the child classes
   attr_reader :type
 
-  def initialize(field_name, options)
-    sanitize_field_name(field_name)
-    @length = options[:length]
+  def initialize(field_name, options = {})
+    @name = field_name
+    @options = options
     @header_definition = []
-    column
+    sanitize_field_name
   end
 
   def definition(offset)
+    column_definition
     @header_definition.insert(2, offset)
     @header_definition.pack('a11aCx2CCx15')
   end
 
+  def name=(string)
+    @name = string
+    sanitize_field_name
+    column_definition
+  end
+
   # Tries to identify the class responsible for the field data. Insipired on
-  # subclassResponsibility in Smalltalk
+  # subclasses in Smalltalk
   # Usage:
   #
   #   BaseFieldWriter.field_for('awesome', length: 10, type: :character)
   #   BaseFieldWriter.field_for('awesome', length: 10, type: :date)
   def self.field_for(field_name, options)
+    options = sanitize_options(options)
     klass = subclasses.select {|klass| klass.type == options[:type] }
-    klass[0].new(field_name, options) unless klass.nil?
+    klass.first.new(field_name, options) unless klass.nil?
   end
 
   # Implementation of the subclasses method from smalltalk.
@@ -42,19 +50,25 @@ class BaseFieldWriter
   end
 
   private
-  def column
-    @header_definition.push @name.upcase, @type, 0, @length
-    @header_definition.push 0, 0, 0, 0, 0, 0
-    #columns << 0 #WorkAreaId
-    #columns << 0 #multiuser
-    #columns << 0 #Setfield
-    #columns << 0 #reserved
-    #columns << 0 #reserved
-    #columns << 0 #IncludeMdx
+  # Options not implemented. Should not be an issue, at least for my uses.
+  #columns << 0 #WorkAreaId
+  #columns << 0 #multiuser
+  #columns << 0 #Setfield
+  #columns << 0 #reserved
+  #columns << 0 #reserved
+  #columns << 0 #IncludeMdx
+  def self.sanitize_options(options)
+    options[:type] ||= :character
+    options
   end
 
-  def sanitize_field_name(field_name)
-    name = field_name.gsub(/[^A-Za-z1-9_]/, '')[0..9].upcase
+  def column_definition
+    @header_definition.push @name.upcase, @type, 0, @length
+    @header_definition.push 0, 0, 0, 0, 0, 0
+  end
+
+  def sanitize_field_name
+    name = @name.gsub(/[^A-Za-z1-9_]/, '')[0..9].upcase
     @name = name.empty? ? 'FIELD' : name
   end
 end
